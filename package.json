@@ -1,0 +1,61 @@
+{
+  "name": "dsh-dingtalk-notify",
+  "version": "0.2.0",
+  "private": true,
+  "license": "MIT",
+  "author": "LapStdy",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LapStdy/dsh-dingtalk-notify.git"
+  },
+  "homepage": "https://github.com/LapStdy/dsh-dingtalk-notify#readme",
+  "bugs": {
+    "url": "https://github.com/LapStdy/dsh-dingtalk-notify/issues"
+  },
+  "description": "钉钉群自定义机器人通知插件：AI 需要你选择/审批、或一轮任务完成时推送到钉钉群；带设置面板（详细度、门控、@、免打扰、诊断）。",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./dingtalk": "./lib/dingtalk.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "files": [
+    "lib/index.js",
+    "lib/dingtalk.js",
+    "lib/client.js",
+    "bin/dingtalk-test.mjs",
+    "bin/smoke-test.mjs",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "bin": {
+    "dsh-dingtalk-test": "./bin/dingtalk-test.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "dingtalk",
+    "webhook",
+    "notify"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-ui-slots"
+      ],
+      "platform": "web"
+    }
+  }
+}

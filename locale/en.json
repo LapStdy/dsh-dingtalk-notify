@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "DingTalk Notify",
+    "description": "Push \\\"needs your input\\\" and \\\"task finished\\\" events to a DingTalk group robot."
+  }
+}

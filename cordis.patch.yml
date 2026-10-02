@@ -1,0 +1,13 @@
+# dsh-dingtalk-notify profile patch layer — insert one loader entry for the
+# plugin package.
+#
+# 宿主半区（lib/index.js）：观察 approval/question 两条 waterfall 与 session 的
+# turn/end，按配置发钉钉；并注册设置面板接口 /api/dsh-dingtalk-notify/*（仅回环可写）。
+#
+# 浏览器半区（lib/client.js）：由 dsh-client-modules 通过 package.json 的
+# dsh.client 声明（exports["./client"]）取走，在「设置 → 钉钉通知」注册整页面板，
+# 并每 45 秒向宿主报一次设备心跳（手机/电脑、页面是否可见）。
+# 改动客户端半区后需重启 dsh web（客户端名册在启动时扫描）。
+- insert:
+    - id: dingtalk-notify
+      name: 'dsh-dingtalk-notify'

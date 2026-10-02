@@ -1,0 +1,13 @@
+# ---- 依赖 ----
+node_modules/
+
+# ---- 运行产生的数据（每个人的都不一样，不进仓库）----
+config.json
+*.ndjson
+*.log
+
+# ---- 编辑器 / 系统 ----
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini

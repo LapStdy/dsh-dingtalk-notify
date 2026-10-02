@@ -1,0 +1,2 @@
+# 统一按 LF 存盘，避免 Windows 检出时全文件变 CRLF
+* text=auto eol=lf
