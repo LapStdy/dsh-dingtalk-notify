@@ -8,19 +8,78 @@
 
 ## 安装
 
+### 网页版（命令行 / `dsh web`）
+
 ```powershell
 dsh plugin --profile web add github:LapStdy/dsh-dingtalk-notify
 ```
 
-装完**重启 `dsh web`**（面板在启动时扫描名册），然后打开 **设置 → 钉钉通知**，填 Webhook 地址；机器人用「加签」模式的话再填 `SEC` 开头的密钥，点「测试发送」验收。
+装完**重启 `dsh web`**（面板在启动时扫描名册），然后打开 **设置 → 钉钉通知**。
 
-> 桌面版把 `--profile web` 换成 `--profile desktop`。
+### 桌面端（DeepSeek Harness 应用）
+
+桌面端的配置由应用自己独占管理，**命令行装不了**（`dsh plugin --profile desktop ...` 会直接报 `managed exclusively by the Electron application`）。要在应用界面里装：
+
+1. 左侧栏点 **插件**
+2. 点 **添加插件**
+3. 粘贴 `github:LapStdy/dsh-dingtalk-notify`（也可以粘完整地址 `https://github.com/LapStdy/dsh-dingtalk-notify`），点安装
+4. 装完**重启桌面端**，再打开 **设置 → 钉钉通知**
+
 > 想改代码就先 `git clone https://github.com/LapStdy/dsh-dingtalk-notify.git`，再 `dsh plugin --profile web add "<克隆下来的目录>"`。
-> 本插件是纯 JS、无构建步骤，所以从 GitHub 安装**不需要**额外的构建授权。
+> 本插件是纯 JS、无构建步骤，从 GitHub 安装**不需要**额外的构建授权。
 
 配置放在 `~/.dsh/dingtalk-notify/config.json`，**面板保存或手改文件都即时生效，不用重启**。
 
 **运行要求**：DSH ≥ `0.1.5-rc.1`，Node ≥ 18。
+
+## 教程：怎么让它真的发到钉钉群
+
+装好插件只是一半，**消息发不发得出去，取决于钉钉那边的机器人怎么建**。照下面走一遍，大约 5 分钟。
+
+### 第 1 步 · 在钉钉群里加一个机器人
+
+1. 打开钉钉，进你想收通知的群（没有就新建一个，只有你自己的群也行）
+2. 右上角 **群设置**（⋯）→ **机器人** → **添加机器人** → **自定义（通过 Webhook 接入）**
+3. 起个名字（比如「DSH 通知」），点下一步
+
+### 第 2 步 · 选安全设置（**这一步决定能不能发成功**）
+
+二选一：
+
+| 选哪种 | 怎么做 | 要注意 |
+|---|---|---|
+| **加签**（推荐） | 复制那串 `SEC` 开头的密钥 | 密钥要填进 DSH；换了机器人得重新复制 |
+| **自定义关键词** | 填一个关键词，比如 `DSH` | 钉钉只放行**正文里含这个词**的消息；本插件标题固定带 `DSH`，所以填 `DSH` 一定过 |
+
+勾选同意 → 完成 → **复制 Webhook 地址**（形如 `https://oapi.dingtalk.com/robot/send?access_token=...`）。
+
+> ⚠️ Webhook 地址 + 加签密钥 = 你在这个群里的发帖凭据。别贴给别人，更别提交到 GitHub。
+
+### 第 3 步 · 填进 DSH 并测通
+
+打开 **设置 → 钉钉通知**：
+
+![连接设置](docs/screenshots/panel-connection.png)
+
+1. **Webhook 地址**：粘贴第 2 步复制的地址（原来那条只显示尾巴，直接粘新的就会替换）
+2. **加签密钥**：用加签模式就粘 `SEC...`；用关键词模式留空
+3. 点 **发送测试消息** —— 这一下**不受门控限制，永远真发**
+
+群里收到，链路就通了。
+
+### 第 4 步 · 群里收到就是这样
+
+![钉钉群里收到的通知](docs/screenshots/dingtalk-group.png)
+
+### 第 5 步 · 没收到？按这个顺序查
+
+| 现象 | 说明 |
+|---|---|
+| 面板提示 **发送失败 `310000`** | 关键词或加签不匹配，最常见的坑。改成「自定义关键词」并填 `DSH` 最省事 |
+| 面板提示 **已跳过** | 这不是失败：当时有人正看着 DSH 页面 / 手机不在线 / 处在免打扰时段。点「发送测试消息」可绕过门控单独验证链路 |
+| 面板提示 **还没填 Webhook** | 地址没存上，回第 3 步重来 |
+| 钉钉里没人被 @ | 机器人只会往群里发消息，要 @ 谁得在「高级」里填手机号 |
+| 只有完成通知、没有选择通知 | 那个问题可能被 `dsh-auto-review` 之类的回答者直接接走了，诊断区里有记录 |
 
 ## 会推什么
 
@@ -34,6 +93,8 @@ dsh plugin --profile web add github:LapStdy/dsh-dingtalk-notify
 
 插件只**旁观**、不抢答：发完通知立刻放行，弹窗和自动审批照旧工作；发送失败只写日志，绝不影响 AI 干活。
 
+![提醒时机](docs/screenshots/panel-triggers.png)
+
 ## 什么时候才发（门控）
 
 每个打开的 DSH 页面每 45 秒报到一次，宿主持有一张在线设备表：
@@ -45,6 +106,18 @@ dsh plugin --profile web add github:LapStdy/dsh-dingtalk-notify
 | `always` | 总是发 |
 
 手机浏览器锁屏后会暂停计时器、心跳会断，所以心跳有效期默认 5 分钟。想要「离开电脑才通知我」，用 `away` 更可靠。
+
+![门控](docs/screenshots/panel-gating.png)
+
+## 通知长什么样（详细度）
+
+面板里二选一，右下方就是实时预览：
+
+| 简洁 | 详细 |
+|---|---|
+| ![](docs/screenshots/panel-content-brief.png) | ![](docs/screenshots/panel-content-detailed.png) |
+
+**简洁**只发一句话 + 会话名，一眼扫完；**详细**会带上问题正文、选项、工具名、用时和回复摘要。
 
 ## 配置项
 
@@ -75,6 +148,8 @@ dsh plugin --profile web add github:LapStdy/dsh-dingtalk-notify
 | `maxMessagesPerMinute` | `18` | 每分钟上限（钉钉官方 20） |
 
 发送诊断日志：`~/.dsh/dingtalk-notify/log.ndjson`，每行一条 JSON（`sent` / `skip` / `error`）。面板的「诊断」区也能看最近 20 条决策和跳过原因。
+
+![高级设置](docs/screenshots/panel-advanced.png)
 
 ## 面板接口（宿主侧）
 

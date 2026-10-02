@@ -1,6 +1,6 @@
 {
   "name": "dsh-dingtalk-notify",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "license": "MIT",
   "author": "LapStdy",
   "repository": {
@@ -26,6 +26,7 @@
     "lib",
     "bin",
     "locale",
+    "docs",
     "icon.svg",
     "cordis.patch.yml",
     "README.md",
