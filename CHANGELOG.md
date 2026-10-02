@@ -1,0 +1,39 @@
+# 更新日志
+
+版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)：`主版本.次版本.修订号`。
+
+## 0.2.1 — 2026-10-02
+
+**修复（打包）**
+- `package.json` 的 `files` 漏了 `bin/selftest.mjs` 和 `locale/`：从 npm 或 git 装的人拿不到 README 里写的自检脚本，`exports` 里的 `./locale/*.json` 也指向不存在的文件。现改为按目录打包（官方模板的写法是显式列出 `locale/*.json` 与 `icon.svg`）。
+- `locale/en.json` 的英文描述被过度转义，解析出来会带一串反斜杠。
+
+**新增**
+- 顶层 `icon` 字段 + `icon.svg`：插件列表、bundle 详情、设置页的插件清单都从这里取图标；官方规定路径相对于 manifest 目录，支持 SVG/PNG/JPEG/WebP，上限 256 KiB。**没有它就只能显示默认图。**
+- 英文 `README.en.md`，两份 README 顶部可互相切换。
+- `CHANGELOG.md`（本文件）。
+
+**元数据**
+- 去掉 `private: true`（它会让 `npm publish` 直接失败）。
+- 补 `engines.dsh`（`>=0.1.5-rc.1`）：插件市场靠这个字段判断「插件在你这版 DSH 上能不能用」，取值下界是实测过的宿主版本。
+- 描述、关键词补英文；关键词补中文，便于中文搜索命中。
+
+**文档**
+- 安装改成首选一行命令 `dsh plugin --profile web add github:LapStdy/dsh-dingtalk-notify`（本插件是纯 JS、无构建步骤，不需要 GitHub 安装的构建授权），并写明兼容性要求。
+
+## 0.2.0 — 2026-09-21
+
+**新增**
+- 设置面板（设置 → 钉钉通知）：详细度、门控、在线设备、诊断。
+- 设备心跳与在线门控：`away` / `mobileOnly` / `always`。
+- 免打扰时段、同类提醒合并、失败重试与限流冷却。
+- 5 条面板接口（写操作仅回环可访问）。
+- 配置原子写 + `.bak` 备份；加签密钥永不回传浏览器。
+
+**修复**
+- @ 手机号：正文补 `@手机号` 文本，否则钉钉不会真的 @。
+
+## 0.1.0 — 2026-09-20
+
+- 首版：三类事件（需要选择 / 需要审批 / 任务完成）推送到钉钉群。
+- 配置文件 `~/.dsh/dingtalk-notify/config.json` + 命令行自检。

@@ -1,7 +1,6 @@
 {
   "name": "dsh-dingtalk-notify",
-  "version": "0.2.0",
-  "private": true,
+  "version": "0.2.1",
   "license": "MIT",
   "author": "LapStdy",
   "repository": {
@@ -12,9 +11,10 @@
   "bugs": {
     "url": "https://github.com/LapStdy/dsh-dingtalk-notify/issues"
   },
-  "description": "钉钉群自定义机器人通知插件：AI 需要你选择/审批、或一轮任务完成时推送到钉钉群；带设置面板（详细度、门控、@、免打扰、诊断）。",
+  "description": "DSH 钉钉群通知插件：AI 需要你选择/审批、或一轮任务完成时推送到钉钉群，自带设置面板（详细度、门控、@、免打扰、诊断）。DingTalk group-robot notifications for DeepSeek Harness — ping your phone when the agent needs your input or finishes a turn, with a settings panel in the DSH UI.",
   "type": "module",
   "main": "lib/index.js",
+  "icon": "./icon.svg",
   "exports": {
     ".": "./lib/index.js",
     "./dingtalk": "./lib/dingtalk.js",
@@ -23,20 +23,22 @@
     "./locale/*.json": "./locale/*.json"
   },
   "files": [
-    "lib/index.js",
-    "lib/dingtalk.js",
-    "lib/client.js",
-    "bin/dingtalk-test.mjs",
-    "bin/smoke-test.mjs",
+    "lib",
+    "bin",
+    "locale",
+    "icon.svg",
     "cordis.patch.yml",
     "README.md",
+    "README.en.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "bin": {
     "dsh-dingtalk-test": "./bin/dingtalk-test.mjs"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=18",
+    "dsh": ">=0.1.5-rc.1"
   },
   "keywords": [
     "deepseek-harness",
@@ -44,7 +46,15 @@
     "dsh-plugin",
     "dingtalk",
     "webhook",
-    "notify"
+    "notify",
+    "notification",
+    "alert",
+    "钉钉",
+    "钉钉机器人",
+    "钉钉通知",
+    "通知",
+    "提醒",
+    "手机提醒"
   ],
   "dsh": {
     "bundle": {

@@ -1,5 +1,7 @@
 # 钉钉通知 · dsh-dingtalk-notify
 
+**中文** | [English](README.en.md)
+
 一个 [DSH](https://github.com/deepseek-ai) 插件：**AI 需要你拍板、或一轮活干完了，往你的钉钉群推一条消息**，并附带一个装在 DSH 设置里的控制面板。
 
 > 钉钉自定义机器人只能发不能收，所以通知里写的是「请回到 DSH 页面操作」。
@@ -7,15 +9,18 @@
 ## 安装
 
 ```powershell
-git clone https://github.com/LapStdy/dsh-dingtalk-notify.git
-dsh plugin --profile web add "<克隆下来的目录>"
+dsh plugin --profile web add github:LapStdy/dsh-dingtalk-notify
 ```
 
 装完**重启 `dsh web`**（面板在启动时扫描名册），然后打开 **设置 → 钉钉通知**，填 Webhook 地址；机器人用「加签」模式的话再填 `SEC` 开头的密钥，点「测试发送」验收。
 
-> 用的是桌面版就把 `--profile web` 换成 `--profile desktop`。
+> 桌面版把 `--profile web` 换成 `--profile desktop`。
+> 想改代码就先 `git clone https://github.com/LapStdy/dsh-dingtalk-notify.git`，再 `dsh plugin --profile web add "<克隆下来的目录>"`。
+> 本插件是纯 JS、无构建步骤，所以从 GitHub 安装**不需要**额外的构建授权。
 
 配置放在 `~/.dsh/dingtalk-notify/config.json`，**面板保存或手改文件都即时生效，不用重启**。
+
+**运行要求**：DSH ≥ `0.1.5-rc.1`，Node ≥ 18。
 
 ## 会推什么
 
@@ -110,6 +115,10 @@ dsh plugin --profile web remove dsh-dingtalk-notify
 | 钉钉没收到，面板显示「已跳过」 | 看跳过原因：有人正看着页面 / 手机不在线 / 免打扰 / 没填 Webhook |
 | 面板显示「发送失败」 | 错误码已翻译成人话；`310000` = 关键词或加签不匹配 |
 | 只有完成通知、没有选择通知 | 问题可能被 `dsh-auto-review` 之类的回答者直接接走了，诊断区有记录 |
+
+## 更新日志
+
+见 [CHANGELOG.md](CHANGELOG.md)。
 
 ## 许可
 
